@@ -44,9 +44,13 @@ pico_set_program_version(Remote_PAMI "0.1")
 pico_enable_stdio_uart(Remote_PAMI 0)
 pico_enable_stdio_usb(Remote_PAMI 1)
 
+# Add subdirectories
+add_subdirectory(drivers/stepper)
+
 # Add the standard library to the build
 target_link_libraries(Remote_PAMI
-        pico_stdlib)
+        pico_stdlib
+        lib_stepper)
 
 # Add the standard include files to the build
 target_include_directories(Remote_PAMI PRIVATE

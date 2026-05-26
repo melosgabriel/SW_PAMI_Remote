@@ -1,0 +1,23 @@
+.program stepper
+
+run_movement:
+    pull block          ; Get speed delay
+    mov isr, osr        ; Store master speed delay safely in ISR
+    pull block          ; Get total steps
+    mov y, osr          ; Y = Master step countdown
+
+pulse_loop:
+    set pins, 1         ; Drive STEP pin HIGH
+    mov x, isr          ; Copy master speed delay from ISR into X
+delay_high:
+    jmp x-- delay_high  ; Decrement X (Fully legal syntax!)
+
+    set pins, 0         ; Drive STEP pin LOW
+    mov x, isr          ; Copy master speed delay from ISR into X again
+delay_low:
+    jmp x-- delay_low   ; Decrement X (Fully legal syntax!)
+
+    jmp y-- pulse_loop  ; Decrement total step count (Y)
+
+    irq 0 rel           ; Alert CPU that this movement finished
+    jmp run_movement    ; Reset and wait for next packet
